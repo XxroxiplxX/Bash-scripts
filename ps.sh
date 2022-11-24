@@ -1,8 +1,14 @@
 #!/bin/bash
-
+if [ -e .tmp ]
+then
+    cat /dev/null > tmp
+else
+    mkdir .tmp
+    touch .tmp/tmp
+fi
 cd /proc
-echo "Pid  |       Name       |   User  |   Ppid  |  State  |  RSS  |  VSZ  |  TTY  |  %CPU   |  %MEM  |  Files"
-echo "------------------------------------------------------------------------------------------------"
+echo "Pid|Name|User|Ppid|State|RSS|VSZ|TTY|%CPU|%MEM|Files" >> ~/projects/scripts/.tmp/tmp
+#echo "------------------------------------------------------------------------------------------------" >> ~/projects/scripts/.tmp/tmp
 for FILE in $(ls | grep '[0-9]')
 do
 
@@ -43,10 +49,14 @@ then
     #saveIFS=$IFS
     #IFS=$'\n'
     user=$(id -nu $uid)
-    echo "${arr[0]}" "   "   "${arr[1]}" "        " "$user" "   " "${arr[3]}" "   " "${arr[2]}" "  " "$rss" "  " "$vsz" "  " "${arr[6]}" "  " "$cpu" "  " "$mem" "  " "$i" | column
+    echo "${arr[0]}" "|"   "${arr[1]}" "|" "$user" "|" "${arr[3]}" "|" "${arr[2]}" "|" "$rss" "|" "$vsz" "|" "${arr[6]}" "|" "$cpu" "|" "$mem" "|" "$i" >> ~/projects/scripts/.tmp/tmp
+    
     #echo "${ua[*]}"
     #unset arr
     #echo $FILE
     cd ..
+
 fi
 done
+column -t -s "|" ~/projects/scripts/.tmp/tmp
+rm -r ~/projects/scripts/.tmp
